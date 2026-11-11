@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CleanText Studio - Instant Text Formatter</title>
+  <style>
+    :root[data-theme="dark"] {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --accent: #38bdf8;
+      --accent-hover: #0284c7;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --border: #334155;
+      --textarea-bg: #0f172a;
+    }
+
+    :root[data-theme="light"] {
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --accent: #0284c7;
+      --accent-hover: #0369a1;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: #cbd5e1;
+      --textarea-bg: #f1f5f9;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      transition: background-color 0.2s, color 0.2s;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      display: flex;
+      justify-content: center;
+      padding: 2rem 1rem;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 950px;
+      width: 100%;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 1rem;
+    }
+
+    header h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 0.2rem;
+    }
+
+    header p {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    .theme-toggle, .pro-badge-btn, .tip-btn {
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+
+    .pro-badge-btn {
+      background: linear-gradient(135deg, #38bdf8, #818cf8);
+      color: #0f172a;
+      border: none;
+    }
+
+    .tip-btn {
+      background: #f59e0b;
+      color: #0f172a;
+      border: none;
+    }
+
+    .theme-toggle:hover, .pro-badge-btn:hover, .tip-btn:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+
+    /* Ad Banner Container */
+    .ad-banner {
+      background: var(--card);
+      border: 1px dashed var(--border);
+      border-radius: 8px;
+      padding: 0.75rem;
+      text-align: center;
+      margin-bottom: 1.5rem;
+      color: var(--muted);
+      font-size: 0.85rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .ad-banner strong {
+      color: var(--accent);
+    }
+
+    .editor-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    @media (max-width: 768px) {
+      .editor-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .panel {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      background: var(--card);
+      padding: 1.25rem;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    label {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .sample-btn {
+      background: none;
+      border: none;
+      color: var(--accent);
+      font-size: 0.8rem;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .sample-btn:hover {
+      text-decoration: underline;
+    }
+
+    textarea {
+      width: 100%;
+      height: 280px;
+      background-color: var(--textarea-bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      resize: vertical;
+      outline: none;
+    }
+
+    textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      background-color: var(--card);
+      padding: 1rem;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      margin-bottom: 1.5rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+
+    .btn {
+      background-color: var(--textarea-bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 0.5rem 1rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .btn-primary {
+      background-color: var(--accent);
+      color: #0f172a;
+      border: none;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--accent-hover);
+      color: #ffffff;
+    }
+
+    .stats {
+      display: flex;
+      gap: 1rem;
+      color: var(--muted);
+      font-size: 0.8rem;
+      margin-top: 0.25rem;
+    }
+
+    .stat-badge {
+      background: var(--textarea-bg);
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+    }
+
+    .action-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Modal Styling */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.75);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity 0.3s, visibility 0.3s;
+      z-index: 1000;
+    }
+
+    .modal-overlay.show {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .modal {
+      background: var(--card);
+      border: 1px solid var(--border);
+      padding: 2rem;
+      border-radius: 16px;
+      max-width: 500px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+    }
+
+    .modal h2 {
+      color: var(--accent);
+      margin-bottom: 0.75rem;
+      font-size: 1.5rem;
+    }
+
+    .modal p {
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin-bottom: 1.5rem;
+      line-height: 1.5;
+    }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .price-card {
+      background: var(--textarea-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem;
+      text-align: center;
+    }
+
+    .price-card h3 {
+      font-size: 1rem;
+      color: var(--text);
+      margin-bottom: 0.25rem;
+    }
+
+    .price-card .price {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+
+    .modal-btn {
+      background: linear-gradient(135deg, #38bdf8, #818cf8);
+      color: #0f172a;
+      border: none;
+      padding: 0.6rem 1rem;
+      font-weight: 700;
+      border-radius: 6px;
+      cursor: pointer;
+      width: 100%;
+      font-size: 0.85rem;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+
+    .modal-close:hover {
+      color: var(--text);
+    }
+
+    .toast {
+      visibility: hidden;
+      min-width: 200px;
+      background-color: var(--accent);
+      color: #0f172a;
+      text-align: center;
+      border-radius: 6px;
+      padding: 0.75rem;
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      opacity: 0;
+      transition: opacity 0.3s, visibility 0.3s;
+    }
+
+    .toast.show {
+      visibility: visible;
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <div>
+        <h1>CleanText Studio <span id="status-tag" style="font-size: 0.75rem; background: #334155; padding: 2px 8px; border-radius: 4px; color: #38bdf8;">FREE TIER</span></h1>
+        <p>Instantly strip messy line breaks, extra spaces, and junk formatting.</p>
+      </div>
+      <div class="header-actions">
+        <button class="tip-btn" onclick="openModal('tip-modal')">☕ Buy Me a Coffee</button>
+        <button class="pro-badge-btn" onclick="openModal('upgrade-modal')">⭐ Upgrade Options</button>
+        <button class="theme-toggle" onclick="toggleTheme()">☀️ Light Mode</button>
+      </div>
+    </header>
+
+    <!-- Display Ad Banner Slot -->
+    <div class="ad-banner" id="ad-box">
+      <span>📢 <strong>Google AdSense Banner Slot</strong> (Monetize free users with ad impressions)</span>
+      <button class="sample-btn" style="color: var(--muted);" onclick="openModal('upgrade-modal')">Remove Ads</button>
+    </div>
+
+    <div class="toolbar">
+      <button class="btn btn-primary" onclick="cleanAll()">✨ Clean Everything</button>
+      <button class="btn" onclick="removeLineBreaks()">Remove Line Breaks</button>
+      <button class="btn" onclick="removeExtraSpaces()">Remove Extra Spaces</button>
+      <button class="btn" onclick="trimLines()">Trim Line Ends</button>
+      <button class="btn" onclick="toUpperCase()">UPPERCASE</button>
+      <button class="btn" onclick="toLowerCase()">lowercase</button>
+      <button class="btn" onclick="clearText()" style="margin-left: auto; border-color: #ef4444; color: #ef4444;">Clear</button>
+    </div>
+
+    <div class="editor-grid">
+      <!-- Input Panel -->
+      <div class="panel">
+        <div class="panel-header">
+          <label for="input-text">Original Text (Limit: 1,000 chars)</label>
+          <button class="sample-btn" onclick="loadSample()">Load Sample Text</button>
+        </div>
+        <textarea id="input-text" placeholder="Paste messy text or long poems here..."></textarea>
+        <div class="stats">
+          <span class="stat-badge" id="input-chars">0 / 1000 chars</span>
+          <span class="stat-badge" id="input-words">0 words</span>
+        </div>
+      </div>
+
+      <!-- Output Panel -->
+      <div class="panel">
+        <div class="panel-header">
+          <label for="output-text">Cleaned Text</label>
+        </div>
+        <textarea id="output-text" readonly placeholder="Cleaned text will appear here..."></textarea>
+        <div class="stats">
+          <span class="stat-badge" id="output-chars">0 chars</span>
+          <span class="stat-badge" id="output-words">0 words</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="action-bar">
+      <button class="btn btn-primary" style="padding: 0.75rem 2rem; font-size: 0.95rem;" onclick="copyOutput()">📋 Copy Cleaned Text</button>
+      <button class="btn" onclick="simulatePro()" id="sim-btn" style="border-color: #818cf8; color: #818cf8;">🧪 Test Pro Mode (Unlimited)</button>
+    </div>
+  </div>
+
+  <!-- Multi-Option Upgrade Modal -->
+  <div id="upgrade-modal" class="modal-overlay">
+    <div class="modal">
+      <h2>🚀 Unlock CleanText Studio</h2>
+      <p>Choose the plan that fits your needs to remove character limits and hide ads!</p>
+      
+      <div class="pricing-grid">
+        <div class="price-card">
+          <h3>Pro Monthly</h3>
+          <div class="price">$10 / mo</div>
+          <button class="modal-btn" onclick="simulatePro(); closeModal('upgrade-modal');">Get Pro</button>
+        </div>
+        
+        <div class="price-card">
+          <h3>Lifetime Pass</h3>
+          <div class="price">$29 once</div>
+          <button class="modal-btn" onclick="simulatePro(); closeModal('upgrade-modal');">Get Lifetime</button>
+        </div>
+
+        <div class="price-card" style="grid-column: span 2;">
+          <h3>50,000 Word Credit Pack</h3>
+          <div class="price">$2.99 pay-as-you-go</div>
+          <button class="modal-btn" onclick="alert('50,000 Credits Added!'); closeModal('upgrade-modal');">Buy 50k Credits</button>
+        </div>
+      </div>
+
+      <button class="modal-close" onclick="closeModal('upgrade-modal')">Close</button>
+    </div>
+  </div>
+
+  <!-- Buy Me A Coffee Tip Modal -->
+  <div id="tip-modal" class="modal-overlay">
+    <div class="modal">
+      <h2>☕ Support CleanText Studio</h2>
+      <p>Enjoying CleanText Studio? Send a quick tip to support development!</p>
+      
+      <div style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem; justify-content: center;">
+        <button class="btn" onclick="sendTip(3)">☕ Tip $3</button>
+        <button class="btn" onclick="sendTip(5)">☕ Tip $5</button>
+        <button class="btn" onclick="sendTip(10)">☕ Tip $10</button>
+      </div>
+
+      <button class="modal-close" onclick="closeModal('tip-modal')">Cancel</button>
+    </div>
+  </div>
+
+  <div id="toast" class="toast">Copied to Clipboard!</div>
+
+  <script>
+    const inputText = document.getElementById('input-text');
+    const outputText = document.getElementById('output-text');
+    const FREE_LIMIT = 1000;
+    let isPro = false;
+
+    // Listen to typing, key release, and paste events for instant counting
+    inputText.addEventListener('input', checkLimit);
+    inputText.addEventListener('keyup', checkLimit);
+    inputText.addEventListener('paste', () => setTimeout(checkLimit, 10));
+
+    function checkLimit() {
+      let len = inputText.value.length;
+      const limitDisplay = isPro ? 'Unlimited' : `${FREE_LIMIT}`;
+
+      if (!isPro && len > FREE_LIMIT) {
+        openModal('upgrade-modal');
+        inputText.value = inputText.value.substring(0, FREE_LIMIT);
+        len = FREE_LIMIT;
+      }
+
+      document.getElementById('input-chars').innerText = `${len} / ${limitDisplay} chars`;
+      document.getElementById('input-words').innerText = `${countWords(inputText.value)} words`;
+      
+      document.getElementById('output-chars').innerText = `${outputText.value.length} chars`;
+      document.getElementById('output-words').innerText = `${countWords(outputText.value)} words`;
+    }
+
+    function countWords(str) {
+      if (!str) return 0;
+      const trimmed = str.trim();
+      return trimmed ? trimmed.split(/\s+/).length : 0;
+    }
+
+    function loadSample() {
+      inputText.value = "   Hello    World!   \n\nThis is messy text copied   from a PDF file with weird spacing and line breaks.   ";
+      cleanAll();
+    }
+
+    function toggleTheme() {
+      const html = document.documentElement;
+      const toggleBtn = document.querySelector('.theme-toggle');
+      if (html.getAttribute('data-theme') === 'dark') {
+        html.setAttribute('data-theme', 'light');
+        toggleBtn.innerText = '🌙 Dark Mode';
+      } else {
+        html.setAttribute('data-theme', 'dark');
+        toggleBtn.innerText = '☀️ Light Mode';
+      }
+    }
+
+    function openModal(id) {
+      document.getElementById(id).classList.add('show');
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('show');
+    }
+
+    function simulatePro() {
+      isPro = !isPro;
+      const tag = document.getElementById('status-tag');
+      const simBtn = document.getElementById('sim-btn');
+      const adBox = document.getElementById('ad-box');
+
+      if (isPro) {
+        tag.innerText = 'PRO MEMBER ⭐';
+        tag.style.background = '#818cf8';
+        tag.style.color = '#ffffff';
+        simBtn.innerText = '✨ Pro Active (Click to Switch Back)';
+        adBox.style.display = 'none';
+      } else {
+        tag.innerText = 'FREE TIER';
+        tag.style.background = '#334155';
+        tag.style.color = '#38bdf8';
+        simBtn.innerText = '🧪 Test Pro Mode (Unlimited)';
+        adBox.style.display = 'flex';
+      }
+      checkLimit();
+    }
+
+    function sendTip(amount) {
+      alert(`Thank you for sending a $${amount} tip!`);
+      closeModal('tip-modal');
+    }
+
+    function cleanAll() {
+      let text = inputText.value;
+      outputText.value = text.replace(/\r?\n|\r/g, ' ').replace(/\s+/g, ' ').trim();
+      checkLimit();
+    }
+
+    function removeLineBreaks() {
+      outputText.value = inputText.value.replace(/\r?\n|\r/g, ' ');
+      checkLimit();
+    }
+
+    function removeExtraSpaces() {
+      outputText.value = inputText.value.replace(/[ \t]+/g, ' ');
+      checkLimit();
+    }
+
+    function trimLines() {
+      outputText.value = inputText.value.split('\n').map(line => line.trim()).join('\n');
+      checkLimit();
+    }
+
+    function toUpperCase() {
+      outputText.value = inputText.value.toUpperCase();
+      checkLimit();
+    }
+
+    function toLowerCase() {
+      outputText.value = inputText.value.toLowerCase();
+      checkLimit();
+    }
+
+    function clearText() {
+      inputText.value = '';
+      outputText.value = '';
+      checkLimit();
+    }
+
+    function copyOutput() {
+      if (!outputText.value) return;
+      navigator.clipboard.writeText(outputText.value);
+      showToast();
+    }
+
+    function showToast() {
+      const toast = document.getElementById('toast');
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 2000);
+    }
+  </script>
+</body>
+</html>
